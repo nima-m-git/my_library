@@ -5,6 +5,10 @@ let body = document.querySelector('body'),
 
 let capitilize = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
 
+let id = 0;
+const generateID = () => id++;
+
+
 
 //          Sample Books            \\
 let TCITH = new Book('the cat in the hat', 'dr.suess', '23', true),
@@ -19,6 +23,7 @@ function Book(title, author, pages, read){
     this.author = author
     this.pages = pages
     this.read = read
+    this.id = generateID();
 }
 
 Book.prototype.info = function() {
@@ -48,24 +53,29 @@ body.appendChild(newBookButton);
 
 
 //          Create Table            \\
-let titles = Object.keys(myLibrary[0]);
+
 
 function generateTableHead() {
+    let headers = Object.keys(myLibrary[0]);
+    headers.push('Remove Entry', 'Toggle Status');
+    headers.splice(headers.indexOf('id'),1);
+
     let thead = table.createTHead();
     let row = thead.insertRow();
-    for (let title of titles) {
+    for (let header of headers) {
         let th = document.createElement('th');
-        let text = document.createTextNode(capitilize(title));
+        let text = document.createTextNode(capitilize(header));
         th.appendChild(text);
         row.appendChild(th);   
     }
+
 }
 
 function generateTable() {
     for (book of myLibrary){
         let row = table.insertRow();
         for (let key in book) {
-            if (book.hasOwnProperty(key)) {
+            if (book.hasOwnProperty(key) && key != 'id') {
                 let cellText = document.createTextNode(book[key]);
                 row.insertCell().appendChild(cellText);
             }
@@ -100,7 +110,7 @@ for (book of myLibrary) {
 
 function getIndex(book){
     for (i=0; i<myLibrary.length; i++) {
-        if (book.title == myLibrary[i].title){
+        if (book.id == myLibrary[i].id){
             return i
         } 
     }
