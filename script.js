@@ -1,8 +1,8 @@
 let myLibrary = [];
 
 let body = document.querySelector('body'),
-    table = document.querySelector('table'),
-    tableBody = document.createElement('tbody');
+    table = document.querySelector('table');
+
 
 
 //          Sample Books            \\
@@ -18,13 +18,13 @@ function Book(title, author, pages, read){
     this.author = author
     this.pages = pages
     this.read = read
-    this.info = function() {
-        let haveRead = (read == 'true')? 'read' : 'not read yet';
-        return title + ' by ' + author + ', ' + pages + ' pages long, ' + haveRead
-    }
 }
 
-Book.prototype.info = 
+Book.prototype.info = function() {
+    let haveRead = (this.read == 'true')? 'read' : 'not read yet';
+    return this.title + ' by ' + this.author + ', ' + this.pages + ' pages long, ' + haveRead
+}
+
 
 //           User Add Book           \\
 function addBookToLibrary() {
@@ -39,49 +39,89 @@ function addBookToLibrary() {
 //              NEW BOOK Button             \\
 let newBookButton = document.createElement('button');
 newBookButton.textContent = 'Add New Book';
-body.appendChild(newBookButton);
-
-newBookButton.addEventListener('click', function () {
+newBookButton.onclick = function() {
     addBookToLibrary();
     updateLibrary(myLibrary[myLibrary.length-1]);
-})
+}
+body.appendChild(newBookButton);
+
 
 
 //          Create Table            \\
-function generateTableHead(table, data) {
+let titles = Object.keys(myLibrary[0]);
+
+function generateTableHead() {
     let thead = table.createTHead();
     let row = thead.insertRow();
-    for (let key of data) {
+    for (let title of titles) {
         let th = document.createElement('th');
-        let text = document.createTextNode(key);
+        let text = document.createTextNode(capitilize(title));
         th.appendChild(text);
         row.appendChild(th);   
     }
 }
 
-function generateTable(table, element) {
-    let row = table.insertRow();
-    for (key in element) {
-        let cell = row.insertCell();
-        let cellText;
-        if (typeof element[key] == 'function') {
-            cellText = document.createTextNode(element[key]());
-        } else {
-            cellText = document.createTextNode(element[key]);
+function generateTable() {
+    for (book of myLibrary){
+        let row = table.insertRow();
+        for (let key in book) {
+            if (book.hasOwnProperty(key)) {
+                let cell = row.insertCell();
+                let cellText = document.createTextNode(book[key]);
+                cell.appendChild(cellText);
+            }
         }
-        cell.appendChild(cellText);
+        let cell = row.insertCell();
+        let button = createRemoveButton(book);
+        cell.appendChild(button);
     }
 }
 
-function updateLibrary(book) {
-    generateTable(table, book);
+function updateLibrary() {
+    body.removeChild(table);
+    newTable = document.createElement('table');
+    body.appendChild(newTable);
+
+    table = document.querySelector('table');
+    console.log('updating');
+
+    generateTable();
+    generateTableHead();
 }
 
 //          Initial         \\
+
 for (book of myLibrary) {
     updateLibrary(book);
 }
 
-data = Object.keys(myLibrary[0]);
-generateTableHead(table, data);
+//          Remove Button           \\
 
+function createRemoveButton(book) {
+    let button = document.createElement('button');
+    button.value = getIndex(book);
+    button.classList = 'remove';
+    button.textContent = 'Remove';
+    button.onclick = function() {removeBook(); };
+    return button
+}
+
+function removeBook() {
+    console.log('check removeBook()');
+    myLibrary.splice(this.value, 1);
+    updateLibrary();
+    console.log('removing');
+}
+
+function getIndex(book){
+    for (i=0; i<myLibrary.length; i++) {
+        if (book.title == myLibrary[i].title){
+            return i
+        } 
+    }
+}
+
+
+function capitilize(string) {
+    return string.slice(0, 1).toUpperCase() + string.slice(1)
+}
