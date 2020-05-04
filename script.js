@@ -3,12 +3,13 @@ let myLibrary = [];
 let body = document.querySelector('body'),
     table = document.querySelector('table');
 
+let capitilize = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
 
 
 //          Sample Books            \\
-let TCITH = new Book('the cat in the hat', 'dr.suess', '23', 'true'),
-    ABNW = new Book('a brave new world', 'aldous huxley', '343', 'true'),
-    ACO = new Book('a clockwork orange', 'anthony burgess', '176', 'false');
+let TCITH = new Book('the cat in the hat', 'dr.suess', '23', true),
+    ABNW = new Book('a brave new world', 'aldous huxley', '343', true),
+    ACO = new Book('a clockwork orange', 'anthony burgess', '176', false);
 myLibrary.push(TCITH, ABNW, ACO);
 
 
@@ -31,7 +32,7 @@ function addBookToLibrary() {
     let title = prompt('what is the name of your book?');
     let author = prompt('who wrote the book?');
     let pages = prompt('how many pages long?');
-    let read = prompt('have you read it? enter true/false')
+    let read = prompt('have you read it? enter true/false') == 'true';
 
     myLibrary.push(new Book(title, author, pages, read));
 }
@@ -44,7 +45,6 @@ newBookButton.onclick = function() {
     updateLibrary(myLibrary[myLibrary.length-1]);
 }
 body.appendChild(newBookButton);
-
 
 
 //          Create Table            \\
@@ -66,15 +66,16 @@ function generateTable() {
         let row = table.insertRow();
         for (let key in book) {
             if (book.hasOwnProperty(key)) {
-                let cell = row.insertCell();
                 let cellText = document.createTextNode(book[key]);
-                cell.appendChild(cellText);
+                row.insertCell().appendChild(cellText);
             }
         }
-        let cell = row.insertCell();
-        let button = createRemoveButton(book);
-        cell.appendChild(button);
-    }
+        let removeButton = createButton(book, 'remove', 'Remove', removeBook);
+        row.insertCell().appendChild(removeButton);
+
+        let readButton = createButton(book, 'read', 'Read?', readBook);
+        row.insertCell().appendChild(readButton);
+    } 
 }
 
 function updateLibrary() {
@@ -83,7 +84,6 @@ function updateLibrary() {
     body.appendChild(newTable);
 
     table = document.querySelector('table');
-    console.log('updating');
 
     generateTable();
     generateTableHead();
@@ -95,23 +95,8 @@ for (book of myLibrary) {
     updateLibrary(book);
 }
 
-//          Remove Button           \\
 
-function createRemoveButton(book) {
-    let button = document.createElement('button');
-    button.value = getIndex(book);
-    button.classList = 'remove';
-    button.textContent = 'Remove';
-    button.onclick = function() {removeBook(); };
-    return button
-}
-
-function removeBook() {
-    console.log('check removeBook()');
-    myLibrary.splice(this.value, 1);
-    updateLibrary();
-    console.log('removing');
-}
+//           Buttons           \\
 
 function getIndex(book){
     for (i=0; i<myLibrary.length; i++) {
@@ -121,7 +106,30 @@ function getIndex(book){
     }
 }
 
-
-function capitilize(string) {
-    return string.slice(0, 1).toUpperCase() + string.slice(1)
+function createButton(book, className, text, func) {
+    let button = document.createElement('button');
+    let index = getIndex(book);
+    button.value = index;
+    button.classList = className;
+    button.textContent = text;
+    button.onclick = function() {func(index); };
+    return button
 }
+
+function removeBook(index) {
+    myLibrary.splice(index, 1);
+    updateLibrary();
+}
+
+function readBook(index) {
+    myLibrary[index].read = (myLibrary[index].read==true)? false : true;
+    updateLibrary();
+}
+
+
+
+
+
+
+
+
