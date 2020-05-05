@@ -3,15 +3,12 @@ let myLibrary = [];
 let body = document.querySelector('body'),
     table = document.querySelector('table');
 
-let capitilize = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
-
 let id = 0;
 const generateID = () => id++;
 
 
-
 //          Sample Books            \\
-let TCITH = new Book('the cat in the hat', 'dr.suess', '23', true),
+let TCITH = new Book('the cat in the hat', 'dr. suess', '23', true),
     ABNW = new Book('a brave new world', 'aldous huxley', '343', true),
     ACO = new Book('a clockwork orange', 'anthony burgess', '176', false);
 myLibrary.push(TCITH, ABNW, ACO);
@@ -22,7 +19,7 @@ function Book(title, author, pages, read){
     this.title = title
     this.author = author
     this.pages = pages
-    this.read = read
+    this.read = (read)? 'yes' : 'no';
     this.id = generateID();
 }
 
@@ -33,27 +30,29 @@ Book.prototype.info = function() {
 
 
 //           User Add Book           \\
+
 function addBookToLibrary() {
-    let title = prompt('what is the name of your book?');
-    let author = prompt('who wrote the book?');
-    let pages = prompt('how many pages long?');
-    let read = prompt('have you read it? enter true/false') == 'true';
+    let title = document.getElementById('title').value,
+        author = document.getElementById('author').value,
+        pages = document.getElementById('pages').value,
+        read = document.getElementById('read').checked;
 
-    myLibrary.push(new Book(title, author, pages, read));
+    if (title && author && pages){
+        myLibrary.push(new Book(title, author, pages, read));
+        updateLibrary();
+        resetForm();
+    } else {
+        alert('Please fill out every field')
+    }
 }
 
-//              NEW BOOK Button             \\
-let newBookButton = document.createElement('button');
-newBookButton.textContent = 'Add New Book';
-newBookButton.onclick = function() {
-    addBookToLibrary();
-    updateLibrary(myLibrary[myLibrary.length-1]);
+let formInputs = document.querySelectorAll('input');
+function resetForm(){
+    formInputs.forEach(input => input.value = '');
 }
-body.appendChild(newBookButton);
 
 
-//          Create Table            \\
-
+//         Create Table            \\
 
 function generateTableHead() {
     let headers = Object.keys(myLibrary[0]);
@@ -64,7 +63,7 @@ function generateTableHead() {
     let row = thead.insertRow();
     for (let header of headers) {
         let th = document.createElement('th');
-        let text = document.createTextNode(capitilize(header));
+        let text = document.createTextNode(header);
         th.appendChild(text);
         row.appendChild(th);   
     }
@@ -100,10 +99,11 @@ function updateLibrary() {
 }
 
 //          Initial         \\
-
 for (book of myLibrary) {
     updateLibrary(book);
 }
+
+resetForm();
 
 
 //           Buttons           \\
@@ -132,7 +132,7 @@ function removeBook(index) {
 }
 
 function readBook(index) {
-    myLibrary[index].read = (myLibrary[index].read==true)? false : true;
+    myLibrary[index].read = (myLibrary[index].read=='yes')? 'no' : 'yes';
     updateLibrary();
 }
 

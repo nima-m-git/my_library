@@ -1,3 +1,23 @@
-table, th, td {
-    border: 1px solid black;
+*{
+    background: url('static/library-img.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
+
+table, th, td , button, #new-book, input {
+    border: 1px solid rgb(0, 0, 0);
+    color: rgb(0, 0, 0);
+    background: rgba(218, 158, 115, 0.801);
+    text-transform: capitalize;
+}
+
+body {
+    position: fixed;
+    margin: auto;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%);
+}
+
