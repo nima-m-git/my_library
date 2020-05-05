@@ -8,11 +8,19 @@ const generateID = () => id++;
 
 
 //          Sample Books            \\
-let TCITH = new Book('the cat in the hat', 'dr. suess', '23', true),
-    ABNW = new Book('a brave new world', 'aldous huxley', '343', true),
-    ACO = new Book('a clockwork orange', 'anthony burgess', '176', false);
-myLibrary.push(TCITH, ABNW, ACO);
-
+myLibrary.push(
+    new Book('the cat in the hat', 'dr. suess', '23', true),
+    new Book('the lorax', 'dr. suess', 36, true),
+    new Book('green eggs and ham', 'dr. suess', '36', true),
+    new Book('a brave new world', 'aldous huxley', '343', true),
+    new Book('a clockwork orange', 'anthony burgess', '176', false),
+    new Book('moby dick', 'herman melville', 585, false),
+    new Book('python crash course', 'eric mattes', 652, true),
+    new Book('Organic Chemistry', 'L.G wade jr', 1326, true),
+    new Book('genetic analysis', 'griffiths et. al', 862, true),
+    new Book('principles of biochemistry', 'lehninger', 1119, true),
+    new Book('statistical thermodynamics and kinetics', 'thomas engel', 653, true),
+    );
 
 //          Book Constructor            \\
 function Book(title, author, pages, read){
@@ -56,7 +64,7 @@ function resetForm(){
 
 function generateTableHead() {
     let headers = Object.keys(myLibrary[0]);
-    headers.push('Remove Entry', 'Toggle Status');
+    headers.push('Remove', 'Toggle');
     headers.splice(headers.indexOf('id'),1);
 
     let thead = table.createTHead();
